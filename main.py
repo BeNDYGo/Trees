@@ -11,21 +11,25 @@ params = {
     "params[fromt]": "0"
 }
 
-my = "55.7160, 37.6606"
-
 response = requests.get(url, params=params)
 
 outer_response = response.json()
+print(outer_response)
+
+my = "55.7160, 37.6606"
+my_lat, my_lon = map(float, my.split(", "))
+tolerance = 0.1
 
 if outer_response.get("success"):
     inner_data = json.loads(outer_response["data"])
 
     for r in inner_data:
         date = r["date"]
-        cord = f"{r['latitude']}, {r['longitude']}"
+        lat, lon = float(r['latitude']), float(r['longitude'])
         value = r['value']
+
         print(
             date[:10],
-            f"({cord})",
+            f"({lat, lon})",
             f"уровень={value}",
         )
