@@ -1,13 +1,13 @@
 import requests
 import json
 
-# 1 - берёза | 2 - дуб | 3 - ольха | 4 - полынь | 5 - орешник | 6 - злаки | 7 - маревые | 8 - амброзия |
+dataTrees = ["берёза", "дуб", "ольха", "полынь", "орешник", "злаки", "маревые", "амброзия"]
 
 BASE_URL = "https://new.pollen.club/ajax/get_pollen_data"
 CENTER_MOSCOW = (55.7544, 37.6228)
 TOLERANCE = 0.3
 
-def get_pollen_info(alerg_type: int):
+def getPollenInfoOfDay(alerg_type: int):
     filters = []
     all_data_points = []
     total_val = 0
@@ -16,7 +16,7 @@ def get_pollen_info(alerg_type: int):
     c_lat, c_lon = CENTER_MOSCOW
 
     try:
-        query_params = {
+        queryParams = {
             "url": "https://test.pollen.club/maps/ddr_query.php",
             "method": "indexStat",
             "params[type]": alerg_type, 
@@ -24,7 +24,7 @@ def get_pollen_info(alerg_type: int):
             "params[fromt]": "0"
         }
 
-        response = requests.get(BASE_URL, params=query_params)
+        response = requests.get(BASE_URL, params=queryParams)
         data_json = response.json()
 
         if data_json.get("success"):
@@ -48,10 +48,10 @@ def get_pollen_info(alerg_type: int):
                         f"уровень={value}",
                     )
                     '''
-            print(f"Подошло {len(filters)}/{len(all_data_points)} | среднее значение: {total_val/len(filters):.3f}, max: {max_val}")
+            print(f"[{dataTrees[alerg_type-1]}]: Подошло {len(filters)}/{len(all_data_points)} | среднее значение: {total_val/len(filters):.3f}, max: {max_val}")
             return filters
         
     except Exception as e: print(e)
     
 for x in range(1, 9):
-    get_pollen_info(x)
+    getPollenInfoOfDay(x)
